@@ -524,6 +524,152 @@
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0 var(--black);
   }
+
+  /* ===== Input mode toggle ===== */
+  .mode-toggle {
+    display: flex;
+    gap: 0;
+    border: 3px solid var(--black);
+  }
+  .mode-btn {
+    flex: 1;
+    background: var(--paper-dark);
+    color: var(--ink);
+    border: none;
+    padding: 12px 10px;
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .mode-btn + .mode-btn { border-left: 3px solid var(--black); }
+  .mode-btn.active { background: var(--blue); color: var(--paper); }
+
+  /* ===== Per-shot production boxes ===== */
+  .shot-box {
+    background: var(--paper-dark);
+    border: 3px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+  .shot-box-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+    color: var(--black);
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .shot-box-title .shot-time {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--amber);
+    color: var(--black);
+    padding: 2px 8px;
+    margin-left: 6px;
+  }
+  .shot-part { margin-bottom: 14px; }
+  .shot-part:last-child { margin-bottom: 0; }
+
+  /* ===== History button ===== */
+  .history-btn {
+    background: var(--black);
+    color: var(--paper);
+    border: 3px solid var(--black);
+    padding: 8px 16px;
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.1s;
+  }
+  .history-btn:hover { background: var(--red); border-color: var(--red); }
+
+  /* ===== Modal ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.7);
+    z-index: 100;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .modal-overlay.visible { display: flex; align-items: flex-start; justify-content: center; }
+  .modal {
+    background: var(--paper);
+    border: 4px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black);
+    width: 100%;
+    max-width: 560px;
+    margin-top: 40px;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--black);
+    padding: 14px 18px;
+  }
+  .modal-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.4rem;
+    color: var(--paper);
+    letter-spacing: 0.04em;
+  }
+  .modal-close {
+    background: var(--red);
+    color: var(--paper);
+    border: 2px solid var(--paper);
+    width: 30px; height: 30px;
+    font-weight: 900;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .modal-body { padding: 18px; }
+  .history-empty {
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--ink);
+    opacity: 0.6;
+    font-style: italic;
+  }
+  .history-item {
+    display: flex;
+    align-items: stretch;
+    border: 2px solid var(--ink);
+    margin-bottom: 10px;
+    background: var(--paper-dark);
+  }
+  .history-item-main { flex: 1; padding: 12px 14px; cursor: pointer; }
+  .history-item-main:hover { background: var(--amber); }
+  .history-item-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
+    color: var(--black);
+  }
+  .history-item-meta {
+    font-size: 0.72rem;
+    color: var(--ink);
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .history-del {
+    background: var(--black);
+    color: var(--paper);
+    border: none;
+    border-left: 2px solid var(--ink);
+    width: 42px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .history-del:hover { background: var(--red); }
 </style>
 </head>
 <body>
@@ -534,7 +680,8 @@
     <div class="logo-stack">
       <h1>Shorts <span class="accent">Production</span> Studio</h1>
     </div>
-    <div class="tagline">★ Grok · ElevenLabs · Adobe Express · SEO Forge · CapCut ★</div>
+    <div class="tagline">Grok · ElevenLabs · Adobe Express · SEO Forge · CapCut</div>
+    <button class="history-btn" id="historyBtn">⤓ History</button>
   </header>
 
   <!-- INPUT PANEL -->
@@ -562,18 +709,23 @@
     </div>
 
     <div class="form-group">
-      <label for="topic">Episode Topic <span class="hint">— the "did you know" fact</span></label>
-      <textarea id="topic" placeholder="e.g. Octopuses have three hearts and blue blood" rows="2"></textarea>
+      <label>Input Mode</label>
+      <div class="mode-toggle">
+        <button type="button" class="mode-btn active" id="modeTopic">Topic → Script</button>
+        <button type="button" class="mode-btn" id="modeVo">Upload My VO Script</button>
+      </div>
     </div>
 
-    <div class="input-row">
-      <div class="form-group">
-        <label for="palette">Color Palette <span class="hint">— optional</span></label>
-        <input type="text" id="palette" placeholder="e.g. teal, black, coral, cream">
-      </div>
-      <div class="form-group">
-        <label for="hookSetting">Hook Setting <span class="hint">— optional, drives Stage 1</span></label>
-        <input type="text" id="hookSetting" placeholder="e.g. deep ocean trench at night">
+    <div class="form-group" id="topicGroup">
+      <label for="topic">Episode Topic <span class="hint">— what the short is about</span></label>
+      <textarea id="topic" placeholder="e.g. How Nokia lost the smartphone war" rows="2"></textarea>
+    </div>
+
+    <div class="form-group" id="voGroup" style="display:none;">
+      <label for="voScript">Your Full VO Script <span class="hint">— used verbatim; prompts are built from this</span></label>
+      <textarea id="voScript" placeholder="Paste your complete voiceover script here. The tool will split it into 7 shots and build image + video prompts around your exact words — your VO text is never rewritten." rows="8"></textarea>
+      <div class="hint" style="margin-top:6px;">Or upload a .txt file:
+        <input type="file" id="voFile" accept=".txt,text/plain" style="display:inline-block;width:auto;border:none;padding:4px 0;">
       </div>
     </div>
 
@@ -607,6 +759,19 @@
     Multi-channel Shorts Production Generator · Style locked per channel · No animation, no captions, no audio in source · <a href="https://github.com" target="_blank">github</a>
   </footer>
 
+</div>
+
+<!-- HISTORY MODAL -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Production Pack History</div>
+      <button class="modal-close" id="historyClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="historyList"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -721,8 +886,7 @@
 
   function applyChannelUi() {
     const ch = CHANNELS[currentChannel];
-    document.getElementById('palette').placeholder = `e.g. ${ch.defaultPalette}`;
-    document.querySelector('.tagline').textContent = `★ ${ch.label} · Grok · ElevenLabs · Adobe Express · SEO Forge · CapCut ★`;
+    document.querySelector('.tagline').textContent = `${ch.label} · Grok · ElevenLabs · Adobe Express · SEO Forge · CapCut`;
   }
 
   channelSelect.value = currentChannel;
@@ -736,25 +900,9 @@
 
   // ============ SCRIPT GENERATION VIA ANTHROPIC API ============
 
-  function buildScriptSystemPrompt(ch) {
-    return `${ch.scriptPersona} Your job is to convert a topic into a structured 7-shot script that follows this exact format:
-
-1. HOOK (0:00–0:02) — A specific, scroll-stopping opening image and line
-2. FORESHADOW (0:02–0:04) — Tease the payoff, promise personal relevance
-3. BEAT 1 (0:04–0:10) — First escalation: the surface fact
-4. BEAT 2 (0:10–0:16) — Second escalation: the deeper science or mechanism
-5. BEAT 3 (0:16–0:22) — Third escalation: the surprising connection or implication
-6. PAYOFF (0:22–0:28) — The emotional/personal punch
-7. LOOP (0:28–0:30) — A teaser question that loops the viewer back
-
-For each shot, provide:
-- A VO line (the narration that ElevenLabs will read)
-- A ${ch.panelWord} description (the visual for image generation) — vertical 9:16 composition, leave empty space for camera moves, NO text or labels in the image
-- A CAMERA MOVE (push-in, pull-out, tilt up, diagonal drift, whip-pan, etc.) — each shot should flow into the next via matched motion or composition
-
-${ch.scriptTone}
-
-OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no preamble. Use this exact schema:
+  // mode: 'topic' = invent the script from a topic; 'vo' = use the user's VO verbatim
+  function buildScriptSystemPrompt(ch, mode) {
+    const schema = `OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no preamble. Use this exact schema:
 
 {
   "title": "Episode title in uppercase",
@@ -771,11 +919,51 @@ OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no preamble. Use this 
     ... (7 shots total)
   ]
 }`;
+
+    if (mode === 'vo') {
+      return `${ch.scriptPersona}
+
+You will be given a COMPLETE, FINAL voiceover script written by the user. Your job is NOT to write or rewrite the narration. Your job is to split it into a 7-shot production plan and design the visuals around it.
+
+ABSOLUTE RULES:
+- The user's VO text is LOCKED. Copy it VERBATIM into the "vo" fields — do not reword, rewrite, shorten, expand, or paraphrase a single word.
+- Split the full script across exactly 7 shots in natural narrative order. Every word of the original script must appear, in order, distributed across the 7 "vo" fields. Concatenating all 7 "vo" fields in order must reproduce the user's script exactly.
+- Shot labels: HOOK, FORESHADOW, BEAT 1, BEAT 2, BEAT 3, PAYOFF, LOOP. Assign timeRanges that sum to roughly the script's spoken length.
+- For each shot, YOU design the ${ch.panelWord} description (what the viewer sees) and the CAMERA MOVE, so the visuals match that shot's VO. Visuals: vertical 9:16, leave empty space for camera moves.
+
+${ch.scriptTone}
+
+For "palette", choose 3-4 anchor colors that suit the script's content and this channel's style.
+
+${schema}`;
+    }
+
+    return `${ch.scriptPersona} Your job is to convert a topic into a structured 7-shot script that follows this exact format:
+
+1. HOOK (0:00–0:02) — A specific, scroll-stopping opening image and line
+2. FORESHADOW (0:02–0:04) — Tease the payoff, promise personal relevance
+3. BEAT 1 (0:04–0:10) — First escalation: the surface point
+4. BEAT 2 (0:10–0:16) — Second escalation: the deeper mechanism
+5. BEAT 3 (0:16–0:22) — Third escalation: the surprising connection or implication
+6. PAYOFF (0:22–0:28) — The emotional/personal punch
+7. LOOP (0:28–0:30) — A teaser question that loops the viewer back
+
+For each shot, provide:
+- A VO line (the narration that ElevenLabs will read)
+- A ${ch.panelWord} description (the visual for image generation) — vertical 9:16 composition, leave empty space for camera moves, NO caption text in the image
+- A CAMERA MOVE (push-in, pull-out, tilt up, diagonal drift, whip-pan, etc.) — each shot should flow into the next via matched motion or composition
+
+${ch.scriptTone}
+
+${schema}`;
   }
 
-  async function generateScript(topic, palette, hookSetting, apiKey) {
+  // mode: 'topic' -> input is a topic string; 'vo' -> input is the user's full VO script
+  async function generateScript(mode, input, apiKey) {
     const ch = CHANNELS[currentChannel];
-    const userPrompt = `Topic: ${topic}${palette ? `\n\nPreferred color palette: ${palette}` : ''}${hookSetting ? `\n\nPreferred hook setting: ${hookSetting}` : ''}\n\nGenerate the 7-shot script as JSON.`;
+    const userPrompt = mode === 'vo'
+      ? `Here is the COMPLETE, FINAL voiceover script. Use it verbatim in the "vo" fields and build the 7-shot plan around it:\n\n"""\n${input}\n"""\n\nGenerate the 7-shot production plan as JSON.`
+      : `Topic: ${input}\n\nGenerate the 7-shot script as JSON.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -788,7 +976,7 @@ OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no preamble. Use this 
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 2500,
-        system: buildScriptSystemPrompt(ch),
+        system: buildScriptSystemPrompt(ch, mode),
         messages: [{ role: 'user', content: userPrompt }]
       })
     });
@@ -801,7 +989,9 @@ OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no preamble. Use this 
     const data = await response.json();
     const text = data.content.find(b => b.type === 'text')?.text || '';
     const cleaned = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(cleaned);
+    const script = JSON.parse(cleaned);
+    script.sourceMode = mode;
+    return script;
   }
 
   // ============ PROMPT BUILDERS ============
@@ -849,20 +1039,18 @@ ${imageConstraints(ch)}${brandClause(ch)}
 **FORMAT:** 9:16 vertical, 2160×3840px minimum`;
   }
 
-  // Builds one fully self-contained box for a single shot (image + video + VO),
-  // each part clearly separated so it can be copy-pasted as a unit.
+  // Builds one shot's three parts as separate strings, so each can have its own copy button.
+  // Returns { image, video, vo }.
   function buildShotBox(script, shot, isFirst) {
     const ch = CHANNELS[currentChannel];
 
     // ----- IMAGE -----
-    let imagePart;
+    let image;
     if (isFirst) {
-      imagePart = `━━━ IMAGE (Shot ${shot.shotNumber}) ━━━
-Shot 1 uses your Stage 1 STYLE REFERENCE image directly — no new image needed here.
+      image = `Shot 1 uses your Stage 1 STYLE REFERENCE image directly — no new image needed here.
 If you want a cleaner take, regenerate Stage 1 until the style is locked, then use that.`;
     } else {
-      imagePart = `━━━ IMAGE PROMPT (Shot ${shot.shotNumber}) ━━━
-Attach the PREVIOUS shot's generated image (Shot ${shot.shotNumber - 1}) as the style reference.
+      image = `Attach the PREVIOUS shot's generated image (Shot ${shot.shotNumber - 1}) as the style reference.
 
 **TASK:** Generate ONE still image matching the style of the attached reference image EXACTLY.
 
@@ -881,21 +1069,19 @@ ${imageConstraints(ch)}
     const move = shot.cameraMove.toLowerCase().startsWith('apply')
       ? shot.cameraMove.replace(/^apply a /i, '')
       : shot.cameraMove;
-    const videoPart = `━━━ VIDEO PROMPT (Shot ${shot.shotNumber}) ━━━
-Attach the Shot ${shot.shotNumber} image${isFirst ? ' (your Stage 1 reference image)' : ' you just generated'}.
+    const video = `Attach the Shot ${shot.shotNumber} image${isFirst ? ' (your Stage 1 reference image)' : ' you just generated'}.
 
 Apply a ${move} to this still image. Duration: 6 seconds. Constant smooth speed.
 ${ch.motionRule}
 
 ${HARD_CONSTRAINTS_VIDEO}`;
 
-    // ----- VO -----
-    const voPart = `━━━ VO LINE (Shot ${shot.shotNumber}) — for ElevenLabs ━━━
-${ch.voDirection}
+    // ----- VO ----- (the exact narration for this shot — verbatim from the user's script in VO mode)
+    const vo = `${ch.voDirection}
 
 "${shot.vo}"`;
 
-    return `${imagePart}\n\n\n${videoPart}\n\n\n${voPart}`;
+    return { image, video, vo };
   }
 
   // ============ RENDER ============
@@ -905,110 +1091,257 @@ ${ch.voDirection}
   }
 
   function renderResults(script) {
+    const ch = CHANNELS[currentChannel];
+    const modeNote = script.sourceMode === 'vo'
+      ? 'VO source: your uploaded script (used verbatim)'
+      : 'VO source: generated from topic';
+
     document.getElementById('episodeInfo').innerHTML = `
       <strong>Episode: ${escapeHtml(script.title)}</strong>
-      <div>Channel: ${escapeHtml(CHANNELS[currentChannel].label)}</div>
+      <div>Channel: ${escapeHtml(ch.label)}</div>
       <div>Palette: ${escapeHtml(script.palette)}</div>
+      <div>${escapeHtml(modeNote)}</div>
       <div style="margin-top: 6px; opacity: 0.75;">7 shots · ~30 seconds · 9:16 vertical · Style locked</div>
     `;
 
-    const stages = [];
-
-    // Stage 1 — Style reference image
-    stages.push({
-      stageNum: '1',
-      title: 'Style Reference Image',
-      subtitle: 'Generate this FIRST in Grok — locks the style for everything else',
-      description: 'Paste this into Grok to generate one single reference image. Iterate until the style is exactly right. This image becomes the visual anchor — Shot 2 uses it as reference, then each shot chains off the one before it.',
-      prompts: [{ label: 'Stage 1 — Style Reference Image', content: buildStage1Prompt(script) }]
-    });
-
-    // Stage 2 — one self-contained box per shot (image + video + VO)
-    // Shot 1's image IS the Stage 1 anchor, so its box reuses that image rather than generating a new one.
-    const shotPrompts = script.shots.map((shot, idx) => ({
-      label: `Shot ${shot.shotNumber} — ${shot.shotLabel} (${shot.timeRange})`,
-      content: buildShotBox(script, shot, idx === 0)
-    }));
-
-    stages.push({
-      stageNum: '2',
-      title: 'Shot-by-Shot Production Boxes',
-      subtitle: 'Seven self-contained boxes — generate one shot fully before moving to the next',
-      description: 'Each box has everything for one shot: the IMAGE prompt, the VIDEO prompt, and the VO line, clearly separated. Workflow: generate the image, then feed that image into the video prompt, then use the next box — each image references the previous shot, so generate them in order. Shot 1 reuses your Stage 1 reference image.',
-      prompts: shotPrompts
-    });
-
-    const html = stages.map(stage => `
+    // --- Stage 1 card: single style-reference prompt ---
+    const stage1Content = buildStage1Prompt(script);
+    const stage1Html = `
       <div class="stage-card">
         <div class="stage-header">
           <div>
-            <div class="stage-title">Stage ${stage.stageNum} · ${escapeHtml(stage.title)}</div>
-            <div class="stage-subtitle">${escapeHtml(stage.subtitle)}</div>
+            <div class="stage-title">Stage 1 · Style Reference Image</div>
+            <div class="stage-subtitle">Generate this FIRST in Grok — locks the style for everything else</div>
           </div>
         </div>
         <div class="stage-body">
-          <div class="stage-description">${escapeHtml(stage.description)}</div>
-          ${stage.prompts.map((p, i) => `
-            <div class="prompt-block">
-              <div class="prompt-block-header">
-                <div class="prompt-label">${escapeHtml(p.label)}</div>
-                <button class="copy-btn" data-content="${escapeHtml(p.content).replace(/"/g, '&quot;')}">📋 Copy</button>
-              </div>
-              <div class="prompt-content">${escapeHtml(p.content)}</div>
+          <div class="stage-description">Paste this into Grok to generate one single reference image. Iterate until the style is exactly right. This image becomes the visual anchor — Shot 2 uses it as reference, then each shot chains off the one before it.</div>
+          <div class="prompt-block">
+            <div class="prompt-block-header">
+              <div class="prompt-label">Stage 1 — Style Reference Image</div>
+              <button class="copy-btn" data-copy="${attr(stage1Content)}">📋 Copy</button>
             </div>
-          `).join('')}
+            <div class="prompt-content">${escapeHtml(stage1Content)}</div>
+          </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
 
-    document.getElementById('stages').innerHTML = html;
+    // --- Stage 2 card: one box per shot, each with separate Image / Video / VO copy buttons ---
+    const shotBoxesHtml = script.shots.map((shot, idx) => {
+      const box = buildShotBox(script, shot, idx === 0);
+      const isFirst = idx === 0;
+      const imgLabel = isFirst ? 'Image (uses Stage 1 reference)' : 'Image Prompt';
+      return `
+        <div class="shot-box">
+          <div class="shot-box-title">Shot ${shot.shotNumber} · ${escapeHtml(shot.shotLabel)} <span class="shot-time">${escapeHtml(shot.timeRange)}</span></div>
 
-    // Wire up copy buttons
+          <div class="shot-part">
+            <div class="prompt-block-header">
+              <div class="prompt-label">🖼 ${imgLabel}</div>
+              ${isFirst ? '' : `<button class="copy-btn" data-copy="${attr(box.image)}">📋 Copy Image Prompt</button>`}
+            </div>
+            <div class="prompt-content">${escapeHtml(box.image)}</div>
+          </div>
+
+          <div class="shot-part">
+            <div class="prompt-block-header">
+              <div class="prompt-label">🎬 Video Prompt</div>
+              <button class="copy-btn" data-copy="${attr(box.video)}">📋 Copy Video Prompt</button>
+            </div>
+            <div class="prompt-content">${escapeHtml(box.video)}</div>
+          </div>
+
+          <div class="shot-part">
+            <div class="prompt-block-header">
+              <div class="prompt-label">🎙 VO Script — Shot ${shot.shotNumber}</div>
+              <button class="copy-btn" data-copy="${attr(box.vo)}">📋 Copy VO</button>
+            </div>
+            <div class="prompt-content">${escapeHtml(box.vo)}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    const stage2Html = `
+      <div class="stage-card">
+        <div class="stage-header">
+          <div>
+            <div class="stage-title">Stage 2 · Shot-by-Shot Production Boxes</div>
+            <div class="stage-subtitle">Seven boxes — generate one shot fully before moving to the next</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-description">Each box holds one shot's Image prompt, Video prompt, and VO script, with its own copy button. Workflow: copy the image prompt → generate the image in Grok → copy the video prompt → animate that image → next box. Each image references the previous shot, so work in order. Shot 1 reuses your Stage 1 reference image.</div>
+          ${shotBoxesHtml}
+        </div>
+      </div>`;
+
+    document.getElementById('stages').innerHTML = stage1Html + stage2Html;
+
+    // Wire up every copy button
     document.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const content = btn.getAttribute('data-content')
-          .replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        const content = unattr(btn.getAttribute('data-copy'));
+        const original = btn.textContent;
         try {
           await navigator.clipboard.writeText(content);
           btn.textContent = '✓ Copied!';
           btn.classList.add('copied');
-          setTimeout(() => {
-            btn.textContent = '📋 Copy';
-            btn.classList.remove('copied');
-          }, 1500);
+          setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
         } catch (e) {
           alert('Copy failed. Select the text manually.');
         }
       });
     });
 
-    // Store the full pack for download
-    window._fullPack = buildFullPack(script, stages);
-
+    window._fullPack = buildFullPack(script);
     document.getElementById('results').classList.add('visible');
   }
 
-  function buildFullPack(script, stages) {
-    let out = `${CHANNELS[currentChannel].label.toUpperCase()} — ${script.title}\n`;
+  // Encode/decode a string for safe use inside an HTML attribute
+  function attr(s) {
+    return escapeHtml(s).replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+  }
+  function unattr(s) {
+    return s.replace(/&#10;/g, '\n').replace(/&quot;/g, '"')
+            .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  }
+
+  function buildFullPack(script) {
+    const ch = CHANNELS[currentChannel];
+    let out = `${ch.label.toUpperCase()} — ${script.title}\n`;
     out += `Palette: ${script.palette}\n`;
-    out += `7 shots · ~30 seconds · 9:16 vertical · ${CHANNELS[currentChannel].label} style\n`;
+    out += `VO source: ${script.sourceMode === 'vo' ? 'uploaded script (verbatim)' : 'generated from topic'}\n`;
+    out += `7 shots · ~30 seconds · 9:16 vertical · ${ch.label} style\n`;
     out += `\n${'='.repeat(80)}\n\n`;
 
-    stages.forEach(stage => {
-      out += `## STAGE ${stage.stageNum} — ${stage.title.toUpperCase()}\n`;
-      out += `${stage.subtitle}\n\n`;
-      out += `${stage.description}\n\n`;
-      stage.prompts.forEach(p => {
-        out += `--- ${p.label} ---\n\n${p.content}\n\n`;
-      });
-      out += `${'='.repeat(80)}\n\n`;
+    out += `## STAGE 1 — STYLE REFERENCE IMAGE\n\n${buildStage1Prompt(script)}\n\n`;
+    out += `${'='.repeat(80)}\n\n`;
+    out += `## STAGE 2 — SHOT-BY-SHOT PRODUCTION BOXES\n\n`;
+
+    script.shots.forEach((shot, idx) => {
+      const box = buildShotBox(script, shot, idx === 0);
+      out += `${'-'.repeat(80)}\n`;
+      out += `SHOT ${shot.shotNumber} — ${shot.shotLabel} (${shot.timeRange})\n`;
+      out += `${'-'.repeat(80)}\n\n`;
+      out += `[IMAGE PROMPT]\n${box.image}\n\n`;
+      out += `[VIDEO PROMPT]\n${box.video}\n\n`;
+      out += `[VO SCRIPT]\n${box.vo}\n\n`;
     });
 
+    out += `${'='.repeat(80)}\n`;
     return out;
   }
 
-  // ============ EVENT HANDLERS ============
+  // ============ INPUT MODE TOGGLE ============
+  let inputMode = 'topic'; // 'topic' | 'vo'
 
+  function setMode(mode) {
+    inputMode = mode;
+    document.getElementById('modeTopic').classList.toggle('active', mode === 'topic');
+    document.getElementById('modeVo').classList.toggle('active', mode === 'vo');
+    document.getElementById('topicGroup').style.display = mode === 'topic' ? '' : 'none';
+    document.getElementById('voGroup').style.display = mode === 'vo' ? '' : 'none';
+  }
+  document.getElementById('modeTopic').addEventListener('click', () => setMode('topic'));
+  document.getElementById('modeVo').addEventListener('click', () => setMode('vo'));
+
+  // Upload a .txt file into the VO textarea
+  document.getElementById('voFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => { document.getElementById('voScript').value = reader.result; };
+    reader.readAsText(file);
+  });
+
+  // ============ HISTORY ============
+  const STORAGE_KEY_HISTORY = 'shortsStudio_history';
+  const HISTORY_LIMIT = 30;
+
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY_HISTORY)) || []; }
+    catch (e) { return []; }
+  }
+
+  function saveToHistory(script) {
+    const history = loadHistory();
+    history.unshift({
+      id: Date.now(),
+      title: script.title,
+      channel: currentChannel,
+      channelLabel: CHANNELS[currentChannel] ? CHANNELS[currentChannel].label : currentChannel,
+      mode: script.sourceMode || 'topic',
+      savedAt: new Date().toISOString(),
+      script: script
+    });
+    localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(history.slice(0, HISTORY_LIMIT)));
+  }
+
+  function deleteHistoryItem(id) {
+    const history = loadHistory().filter(h => h.id !== id);
+    localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = loadHistory();
+    const list = document.getElementById('historyList');
+    if (!history.length) {
+      list.innerHTML = '<div class="history-empty">No saved production packs yet. Generate one and it will appear here.</div>';
+      return;
+    }
+    list.innerHTML = history.map(h => {
+      const d = new Date(h.savedAt);
+      const when = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return `
+        <div class="history-item">
+          <div class="history-item-main" data-load="${h.id}">
+            <div class="history-item-title">${escapeHtml(h.title || 'Untitled')}</div>
+            <div class="history-item-meta">${escapeHtml(h.channelLabel)} · ${h.mode === 'vo' ? 'uploaded VO' : 'topic'} · ${escapeHtml(when)}</div>
+          </div>
+          <button class="history-del" data-del="${h.id}">✕</button>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('[data-load]').forEach(el => {
+      el.addEventListener('click', () => {
+        const item = loadHistory().find(h => String(h.id) === el.getAttribute('data-load'));
+        if (!item) return;
+        if (CHANNELS[item.channel]) {
+          currentChannel = item.channel;
+          localStorage.setItem('shortsGen_channel', currentChannel);
+          document.getElementById('channelSelect').value = currentChannel;
+          applyChannelUi();
+        }
+        renderResults(item.script);
+        closeHistory();
+        setTimeout(() => {
+          document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      });
+    });
+    list.querySelectorAll('[data-del]').forEach(el => {
+      el.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        deleteHistoryItem(Number(el.getAttribute('data-del')));
+      });
+    });
+  }
+
+  function openHistory() {
+    renderHistory();
+    document.getElementById('historyModal').classList.add('visible');
+  }
+  function closeHistory() {
+    document.getElementById('historyModal').classList.remove('visible');
+  }
+  document.getElementById('historyBtn').addEventListener('click', openHistory);
+  document.getElementById('historyClose').addEventListener('click', closeHistory);
+  document.getElementById('historyModal').addEventListener('click', (e) => {
+    if (e.target.id === 'historyModal') closeHistory();
+  });
+
+  // ============ DOWNLOAD ============
   document.getElementById('downloadAll').addEventListener('click', () => {
     if (!window._fullPack) return;
     const blob = new Blob([window._fullPack], { type: 'text/plain' });
@@ -1020,12 +1353,9 @@ ${ch.voDirection}
     URL.revokeObjectURL(url);
   });
 
+  // ============ GENERATE ============
   document.getElementById('generateBtn').addEventListener('click', async () => {
     const apiKey = document.getElementById('apiKey').value.trim();
-    const topic = document.getElementById('topic').value.trim();
-    const palette = document.getElementById('palette').value.trim();
-    const hookSetting = document.getElementById('hookSetting').value.trim();
-
     const errorEl = document.getElementById('error');
     errorEl.classList.remove('visible');
 
@@ -1034,31 +1364,37 @@ ${ch.voDirection}
       errorEl.classList.add('visible');
       return;
     }
-    if (!topic) {
-      errorEl.textContent = 'Please enter a topic.';
-      errorEl.classList.add('visible');
-      return;
+
+    let input;
+    if (inputMode === 'vo') {
+      input = document.getElementById('voScript').value.trim();
+      if (!input) {
+        errorEl.textContent = 'Please paste or upload your VO script.';
+        errorEl.classList.add('visible');
+        return;
+      }
+    } else {
+      input = document.getElementById('topic').value.trim();
+      if (!input) {
+        errorEl.textContent = 'Please enter a topic.';
+        errorEl.classList.add('visible');
+        return;
+      }
     }
 
-    // Save API key
     localStorage.setItem(STORAGE_KEY_API, apiKey);
-
-    // Show loading
     document.getElementById('loading').classList.add('visible');
     document.getElementById('results').classList.remove('visible');
     document.getElementById('generateBtn').disabled = true;
 
     try {
-      const script = await generateScript(topic, palette, hookSetting, apiKey);
-
+      const script = await generateScript(inputMode, input, apiKey);
       if (!script.shots || script.shots.length !== 7) {
         throw new Error('Script generation returned an invalid structure. Try again.');
       }
-
       localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(script));
+      saveToHistory(script);
       renderResults(script);
-
-      // Scroll to results
       setTimeout(() => {
         document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -1074,10 +1410,8 @@ ${ch.voDirection}
   // Load last episode if present (handy for testing)
   const lastEpisode = localStorage.getItem(STORAGE_KEY_LAST);
   if (lastEpisode) {
-    try {
-      const script = JSON.parse(lastEpisode);
-      renderResults(script);
-    } catch (e) { /* ignore */ }
+    try { renderResults(JSON.parse(lastEpisode)); }
+    catch (e) { /* ignore */ }
   }
 </script>
 
