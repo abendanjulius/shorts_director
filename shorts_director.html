@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shorts Production Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bowlby+One&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amber: #FFB627;
+    --gold: #F4A300;
+    --black: #0A0A0A;
+    --paper: #F5EFDF;
+    --paper-dark: #E8DFC4;
+    --blue: #2A4A7F;
+    --red: #C8372D;
+    --orange: #FF6B35;
+    --ink: #1A1209;
+    --halftone: radial-gradient(circle, var(--black) 1px, transparent 1.5px);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: var(--halftone);
+    background-size: 6px 6px;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(255, 182, 39, 0.15), transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(42, 74, 127, 0.08), transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ============ HEADER ============ */
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-top: 20px;
+  }
+
+  .logo-stack {
+    display: inline-block;
+    transform: rotate(-2deg);
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .logo-stack::before {
+    content: '';
+    position: absolute;
+    inset: -8px -16px;
+    background: var(--amber);
+    z-index: -1;
+    border: 4px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+  }
+
+  h1 {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    letter-spacing: 0.02em;
+    line-height: 0.95;
+    color: var(--black);
+    text-transform: uppercase;
+    padding: 8px 24px;
+  }
+
+  h1 .accent {
+    color: var(--red);
+    display: inline-block;
+    transform: rotate(2deg);
+  }
+
+  .tagline {
+    margin-top: 24px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    opacity: 0.75;
+  }
+
+  /* ============ INPUT PANEL ============ */
+  .panel {
+    background: var(--paper);
+    border: 4px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black);
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    border: 1px solid var(--ink);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .panel-label {
+    display: inline-block;
+    background: var(--black);
+    color: var(--amber);
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    padding: 6px 16px;
+    margin-bottom: 20px;
+    transform: rotate(-1deg);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  label .hint {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 0.6;
+    font-size: 0.8rem;
+  }
+
+  input[type="text"], input[type="password"], textarea, select {
+    width: 100%;
+    background: var(--paper-dark);
+    border: 3px solid var(--black);
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path d='M2 4l5 6 5-6' fill='none' stroke='%231A1209' stroke-width='2.5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 44px;
+  }
+
+  input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+    outline: none;
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--black);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .input-row { grid-template-columns: 1fr; }
+  }
+
+  .generate-btn {
+    width: 100%;
+    background: var(--red);
+    color: var(--paper);
+    border: 4px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    padding: 18px;
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-top: 8px;
+  }
+
+  .generate-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--black);
+  }
+
+  .generate-btn:active:not(:disabled) {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 var(--black);
+  }
+
+  .generate-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* ============ API KEY SECTION ============ */
+  .api-key-section {
+    background: var(--paper-dark);
+    border: 2px dashed var(--ink);
+    padding: 16px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+  }
+
+  .api-key-section summary {
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+  }
+
+  .api-key-section[open] summary {
+    margin-bottom: 12px;
+  }
+
+  .api-key-section a {
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  /* ============ RESULTS ============ */
+  #results {
+    display: none;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  #results.visible {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-header {
+    text-align: center;
+    margin: 48px 0 24px;
+  }
+
+  .results-header h2 {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 2rem;
+    text-transform: uppercase;
+    color: var(--black);
+    display: inline-block;
+    background: var(--amber);
+    padding: 12px 24px;
+    border: 4px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    transform: rotate(-1deg);
+  }
+
+  .stage-card {
+    background: var(--paper);
+    border: 4px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .stage-header {
+    background: var(--black);
+    color: var(--amber);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .stage-title {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stage-subtitle {
+    font-family: 'Bangers', cursive;
+    color: var(--paper);
+    font-size: 1rem;
+    opacity: 0.85;
+    letter-spacing: 0.05em;
+  }
+
+  .stage-body {
+    padding: 24px;
+  }
+
+  .stage-description {
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  .prompt-block {
+    background: var(--paper-dark);
+    border: 2px solid var(--ink);
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .prompt-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .prompt-label {
+    font-family: 'Bangers', cursive;
+    background: var(--blue);
+    color: var(--paper);
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+  }
+
+  .copy-btn {
+    background: var(--black);
+    color: var(--paper);
+    border: 2px solid var(--black);
+    padding: 6px 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  .copy-btn:hover {
+    background: var(--red);
+    border-color: var(--red);
+  }
+
+  .copy-btn.copied {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+
+  .prompt-content {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .prompt-content::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .prompt-content::-webkit-scrollbar-thumb {
+    background: var(--ink);
+  }
+
+  /* ============ LOADING STATE ============ */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .loading.visible {
+    display: block;
+  }
+
+  .loading-dots {
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 2rem;
+    color: var(--red);
+    letter-spacing: 0.1em;
+  }
+
+  .loading-dots span {
+    display: inline-block;
+    animation: bounce 1.2s infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+  .loading-dots span:nth-child(4) { animation-delay: 0.45s; }
+  .loading-dots span:nth-child(5) { animation-delay: 0.6s; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .loading-text {
+    margin-top: 16px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  /* ============ ERROR ============ */
+  .error {
+    background: var(--red);
+    color: var(--paper);
+    border: 4px solid var(--black);
+    padding: 16px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .error.visible { display: block; }
+
+  /* ============ EPISODE INFO ============ */
+  .episode-info {
+    background: var(--amber);
+    border: 3px solid var(--black);
+    padding: 16px;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+  }
+
+  .episode-info strong {
+    display: block;
+    font-family: 'Bowlby One', sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    font-size: 1rem;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    margin-top: 60px;
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    padding: 20px;
+  }
+
+  footer a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* ============ DOWNLOAD ALL ============ */
+  .download-all {
+    background: var(--blue);
+    color: var(--paper);
+    border: 4px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    padding: 14px 28px;
+    font-family: 'Bowlby One', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+    transition: all 0.1s;
+  }
+
+  .download-all:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--black);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo-stack">
+      <h1>Shorts <span class="accent">Production</span> Studio</h1>
+    </div>
+    <div class="tagline">★ Grok · ElevenLabs · Adobe Express · SEO Forge · CapCut ★</div>
+  </header>
+
+  <!-- INPUT PANEL -->
+  <div class="panel" id="input-panel">
+    <div class="panel-label">Episode Setup</div>
+
+    <details class="api-key-section">
+      <summary>🔑 Anthropic API Key (required, stored only in your browser)</summary>
+      <div style="margin-top: 12px;">
+        <input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off">
+        <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.75;">
+          Get your key at <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a>.
+          Stored in localStorage, never sent anywhere except Anthropic.
+        </div>
+      </div>
+    </details>
+
+    <div class="form-group">
+      <label for="channelSelect">Channel <span class="hint">— sets the visual style & script tone</span></label>
+      <select id="channelSelect">
+        <option value="howEmpiresFell">How Empires Fell — comic book style, company-collapse stories</option>
+        <option value="cinematicDocs">Cinematic Docs — cinematic business-documentary style</option>
+        <option value="catChannel">Cat Channel — photoreal cat footage, deadpan cat narrator</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="topic">Episode Topic <span class="hint">— the "did you know" fact</span></label>
+      <textarea id="topic" placeholder="e.g. Octopuses have three hearts and blue blood" rows="2"></textarea>
+    </div>
+
+    <div class="input-row">
+      <div class="form-group">
+        <label for="palette">Color Palette <span class="hint">— optional</span></label>
+        <input type="text" id="palette" placeholder="e.g. teal, black, coral, cream">
+      </div>
+      <div class="form-group">
+        <label for="hookSetting">Hook Setting <span class="hint">— optional, drives Stage 1</span></label>
+        <input type="text" id="hookSetting" placeholder="e.g. deep ocean trench at night">
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generateBtn">⚡ Generate Full Production Pack</button>
+
+    <div class="error" id="error"></div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="loading-dots">
+      <span>●</span><span>●</span><span>●</span><span>●</span><span>●</span>
+    </div>
+    <div class="loading-text">Cooking up your morsel...</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="results-header">
+      <h2>Your Production Pack</h2>
+    </div>
+
+    <div class="episode-info" id="episodeInfo"></div>
+
+    <button class="download-all" id="downloadAll">⬇ Download All as .txt</button>
+
+    <div id="stages"></div>
+  </div>
+
+  <footer>
+    Multi-channel Shorts Production Generator · Style locked per channel · No animation, no captions, no audio in source · <a href="https://github.com" target="_blank">github</a>
+  </footer>
+
+</div>
+
+<script>
+  // ============ STATE ============
+  const STORAGE_KEY_API = 'shortsStudio_apiKey';
+  const STORAGE_KEY_LAST = 'shortsStudio_lastEpisode';
+  const DEFAULT_CHANNEL = 'howEmpiresFell';
+
+  // Active channel — declared early so selector wiring can use it before the CHANNELS block runs.
+  // Falls back to the default if localStorage holds a stale/removed channel key.
+  let currentChannel = localStorage.getItem('shortsGen_channel') || DEFAULT_CHANNEL;
+
+  // Load API key from localStorage
+  document.getElementById('apiKey').value = localStorage.getItem(STORAGE_KEY_API) || '';
+  document.getElementById('apiKey').addEventListener('change', (e) => {
+    localStorage.setItem(STORAGE_KEY_API, e.target.value.trim());
+  });
+
+  // ============ CHANNEL PROFILES ============
+  // Each channel defines its own visual style, script tone, captions, and labels.
+  // To add a new channel, copy a block and edit the fields.
+
+  const HARD_CONSTRAINTS_VIDEO = `❌ DO NOT animate, redraw, or modify anything inside the image
+❌ DO NOT add motion to characters, objects, particles, or backgrounds
+❌ DO NOT add audio of any kind — silent clip only
+❌ DO NOT add captions, text overlays, or subtitles
+❌ DO NOT add visual effects, motion graphics, or particles
+✅ ONLY apply a camera move to the still image — treat it like a photograph being filmed
+✅ Camera move should be smooth and continuous at constant speed
+✅ Output: silent video clip, 9:16 vertical, 720×1280 (720p vertical), 30fps`;
+
+  const CHANNELS = {
+    howEmpiresFell: {
+      label: 'How Empires Fell',
+      defaultPalette: 'amber, navy, red, cream',
+      // Image style guide — receives the palette string
+      styleGuide: (palette) => `Vintage American comic book panel from the 1960s–1970s. Bold black ink outlines on every shape (heavy, deliberate linework). Visible Ben-Day halftone dot shading in shadow and light-beam areas. Flat cel-shaded colors with limited gradients. Simplified, stylized forms — NOT photorealistic. Limited color palette: ${palette}. High contrast, graphic, illustrated look. Reference style: classic Marvel / DC comics from the Silver Age.`,
+      // Short phrase describing the style, used inside the STYLE LOCK line
+      styleName: 'comic book aesthetic, ink line weight, halftone shading style',
+      // Image hard constraints. NOTE: brandAccuracy is true, so imageConstraints()
+      // strips the blanket "NO text" line at runtime so real logos can be rendered.
+      imageConstraints: `❌ NO text of any kind anywhere in the image
+❌ NO caption boxes, NO title boxes, NO narration boxes
+❌ NO speech bubbles, NO thought bubbles
+❌ NO sound effect graphics ("BUZZ", "POW", etc.)
+❌ NO panel borders, NO white frames, NO rounded rectangle borders around the image
+❌ NO comic page layout — this is NOT a comic page, it is a single full-bleed illustration
+❌ NO digital painting, NO photorealism, NO concept art
+❌ NO ornate detail or painterly shading`,
+      // The word used for the visual unit in script generation
+      panelWord: 'COMIC PANEL',
+      // Script writer persona + tone for the Anthropic API system prompt
+      scriptPersona: `You are a script writer for "How Empires Fell," a YouTube Shorts channel that tells the stories of how once-dominant companies collapsed — Nokia, Yahoo, Blockbuster, Kodak, and similar fallen giants — in a punchy, dramatic comic-book style. The tone is narrative and gripping: a fast, vivid retelling of a downfall.`,
+      scriptTone: `Tone: dramatic, narrative, gripping — like a comic-book retelling of a corporate downfall. Be factual and specific (real company names, dates, figures, key executives). Build tension toward the collapse. Keep it punchy and visual.`,
+      // VO direction line shown in each shot box
+      voDirection: `Voice direction: Dramatic, engaging storyteller — building tension toward the fall. Settings: Stability 45-55, Similarity 75-85, Style 30-45.`,
+      // Whether real brand logos should be rendered accurately (factual docs) or banned
+      brandAccuracy: true,
+      // Video motion rule — strict freeze for static comic illustrations
+      motionRule: `The image itself must remain completely static — no animated elements, no moving particles, no character movement, no eye blinks, no mouth movement. Only the camera moves.`
+    },
+
+    catChannel: {
+      label: 'Cat Channel',
+      defaultPalette: 'warm cream, soft orange, sky blue, charcoal',
+      styleGuide: (palette) => `Photorealistic footage of a real domestic cat, shot like a high-end nature documentary or premium smartphone video. Natural fur detail with realistic individual strands, lifelike eyes with accurate reflections, true-to-life feline anatomy and proportions. Shallow natural depth of field, realistic ambient lighting, authentic real-world environments. Looks like genuine camera footage of an actual cat — NOT animated, NOT a cartoon, NOT a 3D render, NOT illustrated. Color grade leans toward this palette: ${palette}, applied as natural cinematic color grading, not as cartoon flat color.`,
+      styleName: 'photorealistic real-cat footage, natural fur detail, documentary lighting',
+      imageConstraints: `❌ NO text of any kind anywhere in the image
+❌ NO caption boxes, NO title boxes, NO speech bubbles, NO thought bubbles
+❌ NO labels on objects, NO writing on anything
+❌ NO borders, NO white frames, NO vignette frames around the image
+❌ NO watermarks, NO logos, NO UI overlays
+❌ NO cartoon, NO 3D render, NO illustration, NO painterly look — this must look like real photographic footage
+❌ NO uncanny or distorted anatomy — the cat must have correct, natural feline proportions (right number of legs, toes, eyes; no melted or warped features)
+❌ NO anthropomorphic posing — the cat behaves like a real cat, not a person`,
+      panelWord: 'SHOT',
+      scriptPersona: `You are a script writer for a fun YouTube Shorts channel featuring a single recurring real cat character, shown in photorealistic footage. The cat has a dry, deadpan internal monologue — it narrates its own life with comic understatement, mild scheming, and unbothered confidence. The humor lives entirely in the voiceover; the cat on screen just does ordinary, real cat things.`,
+      scriptTone: `Tone: deadpan, comedic, dryly funny. The humor comes from the gap between calm narration and ordinary real-cat behavior. Keep it punchy and visual. Avoid being cutesy — the cat is unimpressed by everything. Describe only realistic cat actions a real cat could plausibly do on camera.`,
+      voDirection: `Voice direction: Dry, deadpan, unbothered — like a cat narrating its own documentary with mild contempt. Settings: Stability 50-55, Similarity 75-85, Style 30-45.`,
+      brandAccuracy: false,
+      motionRule: `The cat may show subtle natural motion only — gentle breathing, a slow blink, an ear twitch, a slight tail flick, small idle weight shifts. NO large movements, NO walking out of frame, NO teleporting or morphing, NO scene changes, NO new objects appearing. The environment stays still. Keep it calm and realistic — like a quiet observational clip.`
+    },
+
+    cinematicDocs: {
+      label: 'Cinematic Docs',
+      defaultPalette: 'deep navy, gold, charcoal, warm ivory',
+      styleGuide: (palette) => `Cinematic business-documentary still in the style of a premium long-form video essay (ColdFusion / Magnates Media aesthetic). Dramatic, moody lighting with strong contrast and atmospheric depth. Realistic but stylized rendering — looks like a high-end documentary recreation, not a cartoon. Rich shadows, volumetric light, shallow depth of field, composed like a film frame. Color grade leans toward this palette: ${palette}, applied as cinematic color grading. Serious, weighty, premium tone.`,
+      styleName: 'cinematic documentary look, dramatic lighting, premium video-essay framing',
+      imageConstraints: `❌ NO text of any kind anywhere in the image
+❌ NO caption boxes, NO title cards, NO subtitles, NO narration text
+❌ NO borders, NO white frames, NO vignette frames around the image
+❌ NO cartoon, NO comic halftone, NO flat illustration look
+❌ NO uncanny or distorted anatomy on people
+❌ NO modern anachronisms when depicting a historical era`,
+      panelWord: 'SHOT',
+      scriptPersona: `You are a script writer for a cinematic documentary YouTube channel telling the stories of how once-dominant companies collapsed — Nokia, Yahoo, Blockbuster, Kodak, and similar fallen giants. The tone is serious, narrative, and authoritative — a dramatic factual retelling of a downfall.`,
+      scriptTone: `Tone: cinematic, narrative, authoritative, slightly ominous — the gravitas of a documentary narrator. Be factual and specific (real company names, dates, figures, key executives). Build tension toward the collapse — the story is about how greatness unraveled.`,
+      voDirection: `Voice direction: Deep, measured, authoritative documentary narration — deliberate pacing, dramatic weight. Settings: Stability 55-65, Similarity 80-90, Style 25-40.`,
+      brandAccuracy: true,
+      motionRule: `Subtle realistic motion is allowed — gentle ambient movement, slow atmospheric drift, a subject breathing or shifting slightly. NO large action, NO scene changes, NO new objects appearing, NO morphing. Keep it controlled and cinematic, as if filming a careful documentary recreation.`
+    }
+  };
+
+  // ============ CHANNEL SELECTOR ============
+  const channelSelect = document.getElementById('channelSelect');
+
+  // Guard: if localStorage held a removed channel (e.g. old 'brainMorsel'), reset to default
+  if (!CHANNELS[currentChannel]) {
+    currentChannel = DEFAULT_CHANNEL;
+    localStorage.setItem('shortsGen_channel', currentChannel);
+  }
+
+  function applyChannelUi() {
+    const ch = CHANNELS[currentChannel];
+    document.getElementById('palette').placeholder = `e.g. ${ch.defaultPalette}`;
+    document.querySelector('.tagline').textContent = `★ ${ch.label} · Grok · ElevenLabs · Adobe Express · SEO Forge · CapCut ★`;
+  }
+
+  channelSelect.value = currentChannel;
+  applyChannelUi();
+
+  channelSelect.addEventListener('change', (e) => {
+    currentChannel = e.target.value;
+    localStorage.setItem('shortsGen_channel', currentChannel);
+    applyChannelUi();
+  });
+
+  // ============ SCRIPT GENERATION VIA ANTHROPIC API ============
+
+  function buildScriptSystemPrompt(ch) {
+    return `${ch.scriptPersona} Your job is to convert a topic into a structured 7-shot script that follows this exact format:
+
+1. HOOK (0:00–0:02) — A specific, scroll-stopping opening image and line
+2. FORESHADOW (0:02–0:04) — Tease the payoff, promise personal relevance
+3. BEAT 1 (0:04–0:10) — First escalation: the surface fact
+4. BEAT 2 (0:10–0:16) — Second escalation: the deeper science or mechanism
+5. BEAT 3 (0:16–0:22) — Third escalation: the surprising connection or implication
+6. PAYOFF (0:22–0:28) — The emotional/personal punch
+7. LOOP (0:28–0:30) — A teaser question that loops the viewer back
+
+For each shot, provide:
+- A VO line (the narration that ElevenLabs will read)
+- A ${ch.panelWord} description (the visual for image generation) — vertical 9:16 composition, leave empty space for camera moves, NO text or labels in the image
+- A CAMERA MOVE (push-in, pull-out, tilt up, diagonal drift, whip-pan, etc.) — each shot should flow into the next via matched motion or composition
+
+${ch.scriptTone}
+
+OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no preamble. Use this exact schema:
+
+{
+  "title": "Episode title in uppercase",
+  "palette": "3-4 anchor colors separated by commas",
+  "shots": [
+    {
+      "shotNumber": 1,
+      "shotLabel": "HOOK",
+      "timeRange": "0:00–0:02",
+      "vo": "VO line for this shot",
+      "comicPanel": "Detailed visual description of the ${ch.panelWord.toLowerCase()}",
+      "cameraMove": "Detailed camera move description"
+    },
+    ... (7 shots total)
+  ]
+}`;
+  }
+
+  async function generateScript(topic, palette, hookSetting, apiKey) {
+    const ch = CHANNELS[currentChannel];
+    const userPrompt = `Topic: ${topic}${palette ? `\n\nPreferred color palette: ${palette}` : ''}${hookSetting ? `\n\nPreferred hook setting: ${hookSetting}` : ''}\n\nGenerate the 7-shot script as JSON.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2500,
+        system: buildScriptSystemPrompt(ch),
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`API error (${response.status}): ${errText}`);
+    }
+
+    const data = await response.json();
+    const text = data.content.find(b => b.type === 'text')?.text || '';
+    const cleaned = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleaned);
+  }
+
+  // ============ PROMPT BUILDERS ============
+
+  // Brand-accuracy clause — only included for channels with brandAccuracy: true
+  function brandClause(ch) {
+    if (!ch.brandAccuracy) return '';
+    return `
+
+**BRAND ACCURACY (REQUIRED — this is factual documentary content):**
+✅ If this shot features a real company, brand, or product, render its logo, wordmark, typography, and brand colors ACCURATELY and recognizably — these are factual recreations
+✅ Brand logos and signage are the ONLY text permitted in the image, and only when historically accurate to the brand and era depicted
+✅ Match the brand's correct logo era (use the logo design that was in use during the time period of the story)
+❌ Do NOT invent fake brands or distort real logos`;
+  }
+
+  // Image constraints, adjusted when brand accuracy is on (the blanket no-text ban is relaxed)
+  function imageConstraints(ch) {
+    if (!ch.brandAccuracy) return ch.imageConstraints;
+    // Strip any blanket "NO text" line; brand logos need to be allowed
+    return ch.imageConstraints
+      .split('\n')
+      .filter(line => !/NO text of any kind/i.test(line))
+      .join('\n') + `\n❌ NO captions, titles, subtitles, or narration text — brand logos/signage only`;
+  }
+
+  function buildStage1Prompt(script) {
+    const ch = CHANNELS[currentChannel];
+    const hookShot = script.shots[0];
+    return `**TASK:** Generate ONE single still image to serve as a visual style reference for a video series. Do not generate a video. Do not generate multiple images. Generate exactly ONE static illustration.
+
+**SUBJECT:** ${hookShot.comicPanel}
+
+**STYLE REQUIREMENTS (strict):**
+${ch.styleGuide(script.palette)}
+
+**HARD CONSTRAINTS — STRICTLY ENFORCED:**
+${imageConstraints(ch)}${brandClause(ch)}
+
+**COMPOSITION:**
+- Full-bleed illustration — the image must extend edge-to-edge with no border or frame
+- ${ch.brandAccuracy ? 'No text except accurate brand logos/signage where the shot calls for them' : 'Zero letters, zero numbers, zero written symbols anywhere in the frame'}
+- Background decorative elements should be simple shapes, not readable text
+
+**FORMAT:** 9:16 vertical, 2160×3840px minimum`;
+  }
+
+  // Builds one fully self-contained box for a single shot (image + video + VO),
+  // each part clearly separated so it can be copy-pasted as a unit.
+  function buildShotBox(script, shot, isFirst) {
+    const ch = CHANNELS[currentChannel];
+
+    // ----- IMAGE -----
+    let imagePart;
+    if (isFirst) {
+      imagePart = `━━━ IMAGE (Shot ${shot.shotNumber}) ━━━
+Shot 1 uses your Stage 1 STYLE REFERENCE image directly — no new image needed here.
+If you want a cleaner take, regenerate Stage 1 until the style is locked, then use that.`;
+    } else {
+      imagePart = `━━━ IMAGE PROMPT (Shot ${shot.shotNumber}) ━━━
+Attach the PREVIOUS shot's generated image (Shot ${shot.shotNumber - 1}) as the style reference.
+
+**TASK:** Generate ONE still image matching the style of the attached reference image EXACTLY.
+
+**STYLE LOCK:** Same ${ch.styleName}, same palette (${script.palette}), same level of stylization as the attached reference. Non-negotiable.
+
+**SUBJECT:** ${shot.comicPanel}
+
+**HARD CONSTRAINTS:**
+${imageConstraints(ch)}
+❌ NO animation, NO video — a single static image only${brandClause(ch)}
+
+**FORMAT:** 9:16 vertical, 2160×3840px minimum`;
+    }
+
+    // ----- VIDEO -----
+    const move = shot.cameraMove.toLowerCase().startsWith('apply')
+      ? shot.cameraMove.replace(/^apply a /i, '')
+      : shot.cameraMove;
+    const videoPart = `━━━ VIDEO PROMPT (Shot ${shot.shotNumber}) ━━━
+Attach the Shot ${shot.shotNumber} image${isFirst ? ' (your Stage 1 reference image)' : ' you just generated'}.
+
+Apply a ${move} to this still image. Duration: 6 seconds. Constant smooth speed.
+${ch.motionRule}
+
+${HARD_CONSTRAINTS_VIDEO}`;
+
+    // ----- VO -----
+    const voPart = `━━━ VO LINE (Shot ${shot.shotNumber}) — for ElevenLabs ━━━
+${ch.voDirection}
+
+"${shot.vo}"`;
+
+    return `${imagePart}\n\n\n${videoPart}\n\n\n${voPart}`;
+  }
+
+  // ============ RENDER ============
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function renderResults(script) {
+    document.getElementById('episodeInfo').innerHTML = `
+      <strong>Episode: ${escapeHtml(script.title)}</strong>
+      <div>Channel: ${escapeHtml(CHANNELS[currentChannel].label)}</div>
+      <div>Palette: ${escapeHtml(script.palette)}</div>
+      <div style="margin-top: 6px; opacity: 0.75;">7 shots · ~30 seconds · 9:16 vertical · Style locked</div>
+    `;
+
+    const stages = [];
+
+    // Stage 1 — Style reference image
+    stages.push({
+      stageNum: '1',
+      title: 'Style Reference Image',
+      subtitle: 'Generate this FIRST in Grok — locks the style for everything else',
+      description: 'Paste this into Grok to generate one single reference image. Iterate until the style is exactly right. This image becomes the visual anchor — Shot 2 uses it as reference, then each shot chains off the one before it.',
+      prompts: [{ label: 'Stage 1 — Style Reference Image', content: buildStage1Prompt(script) }]
+    });
+
+    // Stage 2 — one self-contained box per shot (image + video + VO)
+    // Shot 1's image IS the Stage 1 anchor, so its box reuses that image rather than generating a new one.
+    const shotPrompts = script.shots.map((shot, idx) => ({
+      label: `Shot ${shot.shotNumber} — ${shot.shotLabel} (${shot.timeRange})`,
+      content: buildShotBox(script, shot, idx === 0)
+    }));
+
+    stages.push({
+      stageNum: '2',
+      title: 'Shot-by-Shot Production Boxes',
+      subtitle: 'Seven self-contained boxes — generate one shot fully before moving to the next',
+      description: 'Each box has everything for one shot: the IMAGE prompt, the VIDEO prompt, and the VO line, clearly separated. Workflow: generate the image, then feed that image into the video prompt, then use the next box — each image references the previous shot, so generate them in order. Shot 1 reuses your Stage 1 reference image.',
+      prompts: shotPrompts
+    });
+
+    const html = stages.map(stage => `
+      <div class="stage-card">
+        <div class="stage-header">
+          <div>
+            <div class="stage-title">Stage ${stage.stageNum} · ${escapeHtml(stage.title)}</div>
+            <div class="stage-subtitle">${escapeHtml(stage.subtitle)}</div>
+          </div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-description">${escapeHtml(stage.description)}</div>
+          ${stage.prompts.map((p, i) => `
+            <div class="prompt-block">
+              <div class="prompt-block-header">
+                <div class="prompt-label">${escapeHtml(p.label)}</div>
+                <button class="copy-btn" data-content="${escapeHtml(p.content).replace(/"/g, '&quot;')}">📋 Copy</button>
+              </div>
+              <div class="prompt-content">${escapeHtml(p.content)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('stages').innerHTML = html;
+
+    // Wire up copy buttons
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const content = btn.getAttribute('data-content')
+          .replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        try {
+          await navigator.clipboard.writeText(content);
+          btn.textContent = '✓ Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = '📋 Copy';
+            btn.classList.remove('copied');
+          }, 1500);
+        } catch (e) {
+          alert('Copy failed. Select the text manually.');
+        }
+      });
+    });
+
+    // Store the full pack for download
+    window._fullPack = buildFullPack(script, stages);
+
+    document.getElementById('results').classList.add('visible');
+  }
+
+  function buildFullPack(script, stages) {
+    let out = `${CHANNELS[currentChannel].label.toUpperCase()} — ${script.title}\n`;
+    out += `Palette: ${script.palette}\n`;
+    out += `7 shots · ~30 seconds · 9:16 vertical · ${CHANNELS[currentChannel].label} style\n`;
+    out += `\n${'='.repeat(80)}\n\n`;
+
+    stages.forEach(stage => {
+      out += `## STAGE ${stage.stageNum} — ${stage.title.toUpperCase()}\n`;
+      out += `${stage.subtitle}\n\n`;
+      out += `${stage.description}\n\n`;
+      stage.prompts.forEach(p => {
+        out += `--- ${p.label} ---\n\n${p.content}\n\n`;
+      });
+      out += `${'='.repeat(80)}\n\n`;
+    });
+
+    return out;
+  }
+
+  // ============ EVENT HANDLERS ============
+
+  document.getElementById('downloadAll').addEventListener('click', () => {
+    if (!window._fullPack) return;
+    const blob = new Blob([window._fullPack], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentChannel}-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('generateBtn').addEventListener('click', async () => {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const topic = document.getElementById('topic').value.trim();
+    const palette = document.getElementById('palette').value.trim();
+    const hookSetting = document.getElementById('hookSetting').value.trim();
+
+    const errorEl = document.getElementById('error');
+    errorEl.classList.remove('visible');
+
+    if (!apiKey) {
+      errorEl.textContent = 'Please add your Anthropic API key (open the API Key section above).';
+      errorEl.classList.add('visible');
+      return;
+    }
+    if (!topic) {
+      errorEl.textContent = 'Please enter a topic.';
+      errorEl.classList.add('visible');
+      return;
+    }
+
+    // Save API key
+    localStorage.setItem(STORAGE_KEY_API, apiKey);
+
+    // Show loading
+    document.getElementById('loading').classList.add('visible');
+    document.getElementById('results').classList.remove('visible');
+    document.getElementById('generateBtn').disabled = true;
+
+    try {
+      const script = await generateScript(topic, palette, hookSetting, apiKey);
+
+      if (!script.shots || script.shots.length !== 7) {
+        throw new Error('Script generation returned an invalid structure. Try again.');
+      }
+
+      localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(script));
+      renderResults(script);
+
+      // Scroll to results
+      setTimeout(() => {
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } catch (e) {
+      errorEl.textContent = e.message || 'Something went wrong. Check your API key and try again.';
+      errorEl.classList.add('visible');
+    } finally {
+      document.getElementById('loading').classList.remove('visible');
+      document.getElementById('generateBtn').disabled = false;
+    }
+  });
+
+  // Load last episode if present (handy for testing)
+  const lastEpisode = localStorage.getItem(STORAGE_KEY_LAST);
+  if (lastEpisode) {
+    try {
+      const script = JSON.parse(lastEpisode);
+      renderResults(script);
+    } catch (e) { /* ignore */ }
+  }
+</script>
+
+</body>
+</html>
